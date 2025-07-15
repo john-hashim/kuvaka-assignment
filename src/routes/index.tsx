@@ -3,6 +3,7 @@ import { lazy } from 'react'
 
 // Lazy load components
 const Login = lazy(() => import('@/pages/auth/Login'))
+const Chat = lazy(() => import('@/pages/feature/Chat'))
 
 const routes: RouteObject[] = [
   {
@@ -12,6 +13,10 @@ const routes: RouteObject[] = [
   {
     path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/chat',
+    element: <Chat />,
   },
 ]
 
