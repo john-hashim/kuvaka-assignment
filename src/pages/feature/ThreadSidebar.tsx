@@ -9,6 +9,7 @@ import {
   MoreHorizontal,
   Search,
   X,
+  Trash2,
 } from "lucide-react";
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useChatStore } from "@/store/chatStore";
-import { useDebounce } from "@/hooks/useDebounce"; // You'll need to create this hook
+import { useDebounce } from "@/hooks/useDebounce";
 
 interface ThreadSidebarProps {
   currentThreadId?: string;
@@ -147,6 +148,7 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
   const navigate = useNavigate();
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [deletingThreadId, setDeletingThreadId] = useState<string | null>(null);
 
   const {
     isLoading: storeLoading,
@@ -160,8 +162,10 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
 
   const threads = useChatStore((state) => state.threads);
 
+  // Debounce the search query
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
+  // Filter threads based on debounced search query
   const filteredThreads = useMemo(() => {
     if (!debouncedSearchQuery.trim()) {
       return threads;
@@ -187,7 +191,11 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
     if (!threadToDelete) {
       return toast("error in finding thread");
     }
+    
     try {
+      setDeletingThreadId(threadId);
+      setOpenDropdownId(null); // Close dropdown
+      
       const mockDeleteThread = (
         threadToDelete: Thread
       ): Promise<ApiResponse<Thread>> => {
@@ -201,6 +209,7 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
           }, 2000);
         });
       };
+      
       const res = await mockDeleteThread(threadToDelete);
       if (res?.success) {
         deleteThread(res.data.id);
@@ -214,6 +223,8 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
     } catch (error) {
       console.error("Delete thread error:", error);
       toast("Error in deleting chat");
+    } finally {
+      setDeletingThreadId(null);
     }
   };
 
@@ -318,7 +329,7 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
                 key={thread.id}
                 className={`group relative p-3 rounded-lg cursor-pointer hover:bg-accent transition-colors ${
                   currentThreadId === thread.id ? "bg-accent" : ""
-                }`}
+                } ${deletingThreadId === thread.id ? "opacity-60" : ""}`}
                 onClick={() => handleThreadClick(thread.id)}
               >
                 <div className="flex items-start gap-3">
@@ -328,34 +339,43 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
                       {thread.title}
                     </div>
                   </div>
-                  <DropdownMenu
-                    open={openDropdownId === thread.id}
-                    onOpenChange={(open) =>
-                      setOpenDropdownId(open ? thread.id : null)
-                    }
-                  >
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 w-6 p-0"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <MoreHorizontal className="h-3 w-3" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-32">
-                      <DropdownMenuItem
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteThread(thread.id);
-                        }}
-                        className="cursor-pointer text-destructive focus:text-destructive"
-                      >
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  
+                  {deletingThreadId === thread.id ? (
+                    
+                    <div className="flex items-center justify-center">
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    </div>
+                  ) : (
+                    <DropdownMenu
+                      open={openDropdownId === thread.id}
+                      onOpenChange={(open) =>
+                        setOpenDropdownId(open ? thread.id : null)
+                      }
+                    >
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <MoreHorizontal className="h-3 w-3" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-32">
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteThread(thread.id);
+                          }}
+                          className="cursor-pointer text-destructive focus:text-destructive"
+                        >
+                          <Trash2 className="h-3 w-3 mr-2" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                 </div>
               </div>
             ))}
