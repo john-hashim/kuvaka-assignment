@@ -10,7 +10,7 @@ function App() {
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <AuthProvider>
         <BrowserRouter>
-          <div className="fixed top-4 right-4 z-50">
+          <div className="fixed top-2 right-2 z-50">
             <ThemeToggle />
           </div>
           <AppRoutes />

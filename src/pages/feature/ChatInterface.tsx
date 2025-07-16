@@ -130,9 +130,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
           </div>
         ) : (
           thread?.message?.map((message, index) => (
-            <div>
+            <div key={message.id}>
               <div
-                key={message.id}
                 className={`flex ${
                   message.role === "user" ? "justify-end" : "justify-start"
                 }`}

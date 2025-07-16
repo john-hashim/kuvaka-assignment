@@ -237,7 +237,7 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
 
   return (
     <>
-      <div className="w-80 border-r border-border bg-card flex flex-col h-screen">
+      <div className="border-r border-border bg-card flex flex-col h-screen">
         <div className="p-4 border-b border-border">
           <Button
             onClick={handleNewChat}
@@ -296,7 +296,7 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0"
+                        className="h-6 w-6 p-0"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <MoreHorizontal className="h-3 w-3" />
