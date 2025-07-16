@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Send } from "lucide-react";
+import { Send, Copy, Check } from "lucide-react";
 import { Message, Role, Thread } from "@/types/chat";
 import { useNavigate } from "react-router-dom";
 import { useChatStore } from "@/store/chatStore";
@@ -11,6 +11,7 @@ interface ChatInterfaceProps {
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
   const [newThreadFlag, setNewThreadFlag] = useState(true);
   const [messageText, setMessageText] = useState("");
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -21,7 +22,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
     state.threads.find((t) => t.id === threadId)
   );
 
-  // Auto-scroll to bottom function
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -34,10 +34,21 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
     }
   }, [threadId]);
 
-  // Scroll to bottom when messages change or loading state changes
   useEffect(() => {
     scrollToBottom();
   }, [thread?.message, loading]);
+
+  const handleCopyMessage = async (content: string, messageId: string) => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopiedMessageId(messageId);
+      setTimeout(() => {
+        setCopiedMessageId(null);
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy message:', err);
+    }
+  };
 
   const handleSendMessage = async () => {
     try {
@@ -150,26 +161,43 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
                   }`}
                 >
                   <div
-                    className={`max-w-[70%] px-4 py-3 rounded-2xl ${
+                    className={`max-w-[70%] px-4 py-3 rounded-2xl relative group ${
                       message.role === "user"
                         ? "bg-blue-500 dark:bg-blue-600 text-white rounded-br-md"
                         : "bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-bl-md border border-gray-200 dark:border-gray-700"
                     }`}
                   >
-                    <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                    <div className="text-sm leading-relaxed whitespace-pre-wrap pr-8">
                       {formatContent(message.content)}
                     </div>
-                    <div
-                      className={`text-xs mt-2 ${
-                        message.role === "user"
-                          ? "text-blue-100 dark:text-blue-200"
-                          : "text-gray-500 dark:text-gray-400"
-                      }`}
-                    >
-                      {new Date(message.createdAt).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                    <div className="flex items-center justify-between mt-2">
+                      <div
+                        className={`text-xs ${
+                          message.role === "user"
+                            ? "text-blue-100 dark:text-blue-200"
+                            : "text-gray-500 dark:text-gray-400"
+                        }`}
+                      >
+                        {new Date(message.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </div>
+                      <button
+                        onClick={() => handleCopyMessage(message.content, message.id)}
+                        className={`opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 ${
+                          message.role === "user"
+                            ? "text-blue-100 dark:text-blue-200 hover:text-white"
+                            : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                        }`}
+                        title="Copy message"
+                      >
+                        {copiedMessageId === message.id ? (
+                          <Check className="w-4 h-4" />
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
+                      </button>
                     </div>
                   </div>
                 </div>
