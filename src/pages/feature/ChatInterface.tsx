@@ -3,6 +3,7 @@ import { Send, Copy, Check } from "lucide-react";
 import { Message, Role, Thread } from "@/types/chat";
 import { useNavigate } from "react-router-dom";
 import { useChatStore } from "@/store/chatStore";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ChatInterfaceProps {
   threadId?: string;
@@ -141,10 +142,12 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
   };
 
   return (
-    <div className="h-full bg-gray-50 dark:bg-gray-900 flex flex-col">
-      <div className="border-t border-gray-500 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+    <div className="h-full bg-background flex flex-col">
+      <div className="border-t border-b border-border bg-muted/30 p-4 sticky top-0 z-10">
         <div className="flex items-end space-x-3">
-          <div className="flex-1">{thread?.title}</div>
+          <div className="flex-1 text-foreground font-medium">
+            {thread?.title}
+          </div>
         </div>
       </div>
       {/* Messages Container */}
@@ -152,17 +155,17 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
         {newThreadFlag ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
-              <h2 className="text-2xl font-semibold mb-2 text-gray-800 dark:text-gray-200">
+              <h2 className="text-2xl font-semibold mb-2 text-foreground">
                 Start a new conversation
               </h2>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-muted-foreground">
                 Type a message below to begin
               </p>
             </div>
           </div>
         ) : (
           <>
-            {thread?.message?.map((message, index) => (
+            {thread?.message?.map((message) => (
               <div key={message.id}>
                 <div
                   className={`flex ${
@@ -172,8 +175,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
                   <div
                     className={`max-w-[70%] px-4 py-3 rounded-2xl relative group ${
                       message.role === "user"
-                        ? "bg-blue-500 dark:bg-blue-600 text-white rounded-br-md"
-                        : "bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-bl-md border border-gray-200 dark:border-gray-700"
+                        ? "bg-primary text-primary-foreground rounded-br-md"
+                        : "bg-card text-card-foreground rounded-bl-md border border-border"
                     }`}
                   >
                     <div className="text-sm leading-relaxed whitespace-pre-wrap pr-8">
@@ -183,8 +186,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
                       <div
                         className={`text-xs ${
                           message.role === "user"
-                            ? "text-blue-100 dark:text-blue-200"
-                            : "text-gray-500 dark:text-gray-400"
+                            ? "text-primary-foreground/70"
+                            : "text-muted-foreground"
                         }`}
                       >
                         {new Date(message.createdAt).toLocaleTimeString([], {
@@ -196,10 +199,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
                         onClick={() =>
                           handleCopyMessage(message.content, message.id)
                         }
-                        className={`opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 ${
+                        className={`opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded hover:bg-accent ${
                           message.role === "user"
-                            ? "text-blue-100 dark:text-blue-200 hover:text-white"
-                            : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                            ? "text-primary-foreground/70 hover:text-primary-foreground"
+                            : "text-muted-foreground hover:text-foreground"
                         }`}
                         title="Copy message"
                       >
@@ -212,31 +215,36 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
                     </div>
                   </div>
                 </div>
-                {loading && index === thread.message.length - 1 && (
-                  <div
-                    className="max-w-[70%] px-4 py-3 rounded-2xl
-                        bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-bl-md border border-gray-200 dark:border-gray-700"
-                  >
-                    <div className="text-sm leading-relaxed whitespace-pre-wrap">
-                      Loading....
-                    </div>
-                  </div>
-                )}
               </div>
             ))}
+
+            {/* Enhanced Loading skeleton */}
+            {loading && (
+              <div className="flex justify-start">
+                <div className="w-[70%] px-4 py-3 rounded-2xl bg-card text-card-foreground rounded-bl-md border border-border">
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <div>Gemini is thinking</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div ref={messagesEndRef} />
           </>
         )}
       </div>
 
-      <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+      <div className="border-t border-border bg-card p-4">
         <div className="flex items-center justify-start space-x-3">
           <textarea
             value={messageText}
             onChange={(e) => setMessageText(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type your message..."
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent max-h-32 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+            className="w-full px-4 py-3 border border-border rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent max-h-32 bg-background text-foreground placeholder-muted-foreground"
             rows={1}
             style={{
               minHeight: "48px",
@@ -251,7 +259,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
           <button
             onClick={handleSendMessage}
             disabled={!messageText.trim()}
-            className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 cursor-pointer text-white rounded-full p-3 transition-colors duration-200"
+            className="bg-primary hover:bg-primary/90 cursor-pointer text-primary-foreground rounded-full p-3 transition-colors duration-200"
           >
             <Send className="w-5 h-5" />
           </button>
