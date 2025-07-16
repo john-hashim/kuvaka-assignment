@@ -182,7 +182,7 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
               data: threadToDelete,
               message: "Thread has been deleted",
             });
-          }, 1500);
+          }, 2000);
         });
       };
       const res = await mockDeleteThread(threadToDelete);
@@ -217,7 +217,7 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
                 data: mockThreadsData,
                 message: "Threads retrieved successfully",
               });
-            }, 1500);
+            }, 2000);
           });
         };
         const response = await mockThreads(mockThreadsData);

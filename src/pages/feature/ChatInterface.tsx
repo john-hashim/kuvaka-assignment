@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Send } from "lucide-react";
 import { Message, Role, Thread } from "@/types/chat";
 import { useNavigate } from "react-router-dom";
@@ -13,8 +13,18 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
   const [messageText, setMessageText] = useState("");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { updateThread, unshiftThread } = useChatStore();
+
+  const thread = useChatStore((state) =>
+    state.threads.find((t) => t.id === threadId)
+  );
+
+  // Auto-scroll to bottom function
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     if (threadId) {
@@ -24,9 +34,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
     }
   }, [threadId]);
 
-  const thread = useChatStore((state) =>
-    state.threads.find((t) => t.id === threadId)
-  );
+  // Scroll to bottom when messages change or loading state changes
+  useEffect(() => {
+    scrollToBottom();
+  }, [thread?.message, loading]);
 
   const handleSendMessage = async () => {
     try {
@@ -66,7 +77,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
             },
           ],
         };
-        
+
         unshiftThread(mockThreadValue);
         setMessageText("");
         navigate(`/chat/${mockThreadValue.id}`);
@@ -84,18 +95,19 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
   };
 
   const mockAIResponce = (threadId: string): Promise<Message> => {
-    const date = new Date().toString()
-    const id = Math.floor(100000 + Math.random() * 900000).toString()
+    const date = new Date().toString();
+    const id = Math.floor(100000 + Math.random() * 900000).toString();
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
           id: id,
           threadId: threadId,
-          content: "some random value generated from ai",
+          content:
+            "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
           role: Role.Assistant,
           createdAt: date,
         });
-      }, 1500);
+      }, 3000);
     });
   };
 
@@ -129,49 +141,53 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
             </div>
           </div>
         ) : (
-          thread?.message?.map((message, index) => (
-            <div key={message.id}>
-              <div
-                className={`flex ${
-                  message.role === "user" ? "justify-end" : "justify-start"
-                }`}
-              >
+          <>
+            {thread?.message?.map((message, index) => (
+              <div key={message.id}>
                 <div
-                  className={`max-w-[70%] px-4 py-3 rounded-2xl ${
-                    message.role === "user"
-                      ? "bg-blue-500 dark:bg-blue-600 text-white rounded-br-md"
-                      : "bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-bl-md border border-gray-200 dark:border-gray-700"
+                  className={`flex ${
+                    message.role === "user" ? "justify-end" : "justify-start"
                   }`}
                 >
-                  <div className="text-sm leading-relaxed whitespace-pre-wrap">
-                    {formatContent(message.content)}
-                  </div>
                   <div
-                    className={`text-xs mt-2 ${
+                    className={`max-w-[70%] px-4 py-3 rounded-2xl ${
                       message.role === "user"
-                        ? "text-blue-100 dark:text-blue-200"
-                        : "text-gray-500 dark:text-gray-400"
+                        ? "bg-blue-500 dark:bg-blue-600 text-white rounded-br-md"
+                        : "bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-bl-md border border-gray-200 dark:border-gray-700"
                     }`}
                   >
-                    {new Date(message.createdAt).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                    <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                      {formatContent(message.content)}
+                    </div>
+                    <div
+                      className={`text-xs mt-2 ${
+                        message.role === "user"
+                          ? "text-blue-100 dark:text-blue-200"
+                          : "text-gray-500 dark:text-gray-400"
+                      }`}
+                    >
+                      {new Date(message.createdAt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </div>
                   </div>
                 </div>
+                {loading && index === thread.message.length - 1 && (
+                  <div
+                    className="max-w-[70%] px-4 py-3 rounded-2xl
+                        bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-bl-md border border-gray-200 dark:border-gray-700"
+                  >
+                    <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                      Loading....
+                    </div>
+                  </div>
+                )}
               </div>
-              {loading && index === thread.message.length - 1 && (
-                <div
-                  className="max-w-[70%] px-4 py-3 rounded-2xl
-                      bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-bl-md border border-gray-200 dark:border-gray-700"
-                >
-                  <div className="text-sm leading-relaxed whitespace-pre-wrap">
-                    Loading....
-                  </div>
-                </div>
-              )}
-            </div>
-          ))
+            ))}
+            {/* Invisible element to scroll to */}
+            <div ref={messagesEndRef} />
+          </>
         )}
       </div>
 

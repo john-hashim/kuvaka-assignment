@@ -16,6 +16,7 @@ interface ChatStore {
   deleteThread: (threadId: string) => void
   updateThread: (thread: Thread) => void
   getThread: (threadId: string) => Thread | undefined
+  logout: () => void
 }
 
 export const useChatStore = create<ChatStore>()(
@@ -71,6 +72,7 @@ export const useChatStore = create<ChatStore>()(
           const state = get()
           return state.threads.find(thread => thread.id === threadId)
         },
+        logout: () => set(state => ({ ...state, threads: [] }), false, 'logout'),
       }),
       {
         name: 'chat-storage',

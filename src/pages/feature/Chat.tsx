@@ -8,20 +8,24 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { useChatStore } from "@/store/chatStore";
 
 const Chat: React.FC = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const { threadId } = useParams<{ threadId: string }>();
+  const { logout: storeLogout } = useChatStore()
   
   const handleLogout = async () => {
     try {
       logout();
       navigate("/login");
+      storeLogout()
     } catch (e) {
       logout();
       console.log(e);
       navigate("/login");
+      storeLogout()
     }
   };
 
@@ -38,7 +42,6 @@ const Chat: React.FC = () => {
 
         {/* Main Chat Area */}
         <main className="flex-1 flex flex-col min-w-0 h-full">
-          {/* Optional: Add sidebar trigger in header */}
           <div className="border-b p-2 flex-shrink-0">
             <SidebarTrigger />
           </div>
