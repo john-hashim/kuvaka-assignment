@@ -58,63 +58,65 @@ const mockThreadsData: Thread[] = [
     title: "Samsung: A 10 message",
     createdAt: "2025-07-01T14:24:10.462Z",
     message: [
-            {
-                "id": "cmckmcdem0012oozpg5yqc776",
-                "threadId": "cmckmcdem0011oozpr0po8kml",
-                "content": "Explain about samusung company in 10 words",
-                "role": Role.User,
-                "createdAt": "2025-07-01T14:24:10.462Z"
-            },
-            {
-                "id": "cmckmcdem0013oozphxjeyiuc",
-                "threadId": "cmckmcdem0011oozpr0po8kml",
-                "content": "Samsung: South Korean multinational conglomerate specializing in electronics, technology, and construction.\n",
-                "role": Role.Assistant,
-                "createdAt": "2025-07-01T14:24:10.462Z"
-            },
-            {
-                "id": "cmckn8nzx001boozpbsx75olx",
-                "threadId": "cmckmcdem0011oozpr0po8kml",
-                "content": "what are thier latest 2 products",
-                "role": Role.User,
-                "createdAt": "2025-07-01T14:49:17.179Z"
-            },
-            {
-                "id": "cmckn8qgq001doozpqjugy1jp",
-                "threadId": "cmckmcdem0011oozpr0po8kml",
-                "content": "As of November 2023, two of Samsung's latest prominent products are:\n\n1.  **Samsung Galaxy S23 FE (Fan Edition):** A more affordable version of the flagship S23 series, offering many of the key features at a lower price point.\n2.  **Samsung Bespoke AI Laundry Combo:** A smart washer and dryer combo with AI-powered features for optimized laundry cycles.\n\nIt's worth noting that product releases are frequent, so there might be newer products depending on when you're asking.\n",
-                "role": Role.Assistant,
-                "createdAt": "2025-07-01T14:49:20.378Z"
-            },
-            {
-                "id": "cmcknjesj001foozpjc8go8qb",
-                "threadId": "cmckmcdem0011oozpr0po8kml",
-                "content": "where are they based",
-                "role": Role.User,
-                "createdAt": "2025-07-01T14:57:38.465Z"
-            },
-            {
-                "id": "cmcknjgeb001hoozpdxj83zok",
-                "threadId": "cmckmcdem0011oozpr0po8kml",
-                "content": "Samsung is based in **Seoul, South Korea**.\n",
-                "role": Role.Assistant,
-                "createdAt": "2025-07-01T14:57:40.548Z"
-            },
-            {
-                "id": "cmcknjnbt001joozpa8fcb8k4",
-                "threadId": "cmckmcdem0011oozpr0po8kml",
-                "content": "who is the founder",
-                "role": Role.User,
-                "createdAt": "2025-07-01T14:57:49.529Z"
-            },
-            {
-                "id": "cmcknjowb001loozpu6f194oq",
-                "threadId": "cmckmcdem0011oozpr0po8kml",
-                "content": "The founder of Samsung is **Lee Byung-chul**.\n",
-                "role": Role.Assistant,
-                "createdAt": "2025-07-01T14:57:51.563Z"
-            }
-        ],
+      {
+        id: "cmckmcdem0012oozpg5yqc776",
+        threadId: "cmckmcdem0011oozpr0po8kml",
+        content: "Explain about samusung company in 10 words",
+        role: Role.User,
+        createdAt: "2025-07-01T14:24:10.462Z",
+      },
+      {
+        id: "cmckmcdem0013oozphxjeyiuc",
+        threadId: "cmckmcdem0011oozpr0po8kml",
+        content:
+          "Samsung: South Korean multinational conglomerate specializing in electronics, technology, and construction.\n",
+        role: Role.Assistant,
+        createdAt: "2025-07-01T14:24:10.462Z",
+      },
+      {
+        id: "cmckn8nzx001boozpbsx75olx",
+        threadId: "cmckmcdem0011oozpr0po8kml",
+        content: "what are thier latest 2 products",
+        role: Role.User,
+        createdAt: "2025-07-01T14:49:17.179Z",
+      },
+      {
+        id: "cmckn8qgq001doozpqjugy1jp",
+        threadId: "cmckmcdem0011oozpr0po8kml",
+        content:
+          "As of November 2023, two of Samsung's latest prominent products are:\n\n1.  **Samsung Galaxy S23 FE (Fan Edition):** A more affordable version of the flagship S23 series, offering many of the key features at a lower price point.\n2.  **Samsung Bespoke AI Laundry Combo:** A smart washer and dryer combo with AI-powered features for optimized laundry cycles.\n\nIt's worth noting that product releases are frequent, so there might be newer products depending on when you're asking.\n",
+        role: Role.Assistant,
+        createdAt: "2025-07-01T14:49:20.378Z",
+      },
+      {
+        id: "cmcknjesj001foozpjc8go8qb",
+        threadId: "cmckmcdem0011oozpr0po8kml",
+        content: "where are they based",
+        role: Role.User,
+        createdAt: "2025-07-01T14:57:38.465Z",
+      },
+      {
+        id: "cmcknjgeb001hoozpdxj83zok",
+        threadId: "cmckmcdem0011oozpr0po8kml",
+        content: "Samsung is based in **Seoul, South Korea**.\n",
+        role: Role.Assistant,
+        createdAt: "2025-07-01T14:57:40.548Z",
+      },
+      {
+        id: "cmcknjnbt001joozpa8fcb8k4",
+        threadId: "cmckmcdem0011oozpr0po8kml",
+        content: "who is the founder",
+        role: Role.User,
+        createdAt: "2025-07-01T14:57:49.529Z",
+      },
+      {
+        id: "cmcknjowb001loozpu6f194oq",
+        threadId: "cmckmcdem0011oozpr0po8kml",
+        content: "The founder of Samsung is **Lee Byung-chul**.\n",
+        role: Role.Assistant,
+        createdAt: "2025-07-01T14:57:51.563Z",
+      },
+    ],
   },
   {
     id: "cmclhkpd8001tooczzy0cst1e",
@@ -170,7 +172,7 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
     if (!debouncedSearchQuery.trim()) {
       return threads;
     }
-    
+
     return threads.filter((thread) =>
       thread.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
     );
@@ -185,17 +187,17 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
   };
 
   const handleDeleteThread = async (threadId: string) => {
-    const threadToDelete = mockThreadsData.find(
+    const threadToDelete = threads.find(
       (thread) => thread.id === threadId
     );
     if (!threadToDelete) {
       return toast("error in finding thread");
     }
-    
+
     try {
       setDeletingThreadId(threadId);
       setOpenDropdownId(null); // Close dropdown
-      
+
       const mockDeleteThread = (
         threadToDelete: Thread
       ): Promise<ApiResponse<Thread>> => {
@@ -209,7 +211,7 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
           }, 2000);
         });
       };
-      
+
       const res = await mockDeleteThread(threadToDelete);
       if (res?.success) {
         deleteThread(res.data.id);
@@ -260,9 +262,10 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
         setLoading(false);
       }
     };
-
-    loadThreads();
-  }, [setThreads, setLoading, setError, clearError]);
+    if (threads.length == 0) {
+      loadThreads();
+    }
+  }, [setThreads, setLoading, setError, clearError, threads]);
 
   const isLoading = storeLoading;
 
@@ -282,7 +285,7 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
             <MessageSquarePlus className="h-4 w-4" />
             New Chat
           </Button>
-          
+
           {/* Search Input */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -339,9 +342,8 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
                       {thread.title}
                     </div>
                   </div>
-                  
+
                   {deletingThreadId === thread.id ? (
-                    
                     <div className="flex items-center justify-center">
                       <Loader2 className="h-5 w-5 animate-spin" />
                     </div>
