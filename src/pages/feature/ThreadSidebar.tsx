@@ -1,13 +1,16 @@
 import { Thread, ApiResponse, Role } from "@/types/chat";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   MessageSquarePlus,
   MessageSquare,
   LogOut,
   Loader2,
   MoreHorizontal,
+  Search,
+  X,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
@@ -17,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useChatStore } from "@/store/chatStore";
+import { useDebounce } from "@/hooks/useDebounce"; // You'll need to create this hook
 
 interface ThreadSidebarProps {
   currentThreadId?: string;
@@ -141,8 +145,8 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
   onLogout,
 }) => {
   const navigate = useNavigate();
-  //   const [selectedThread, setSelectedThread] = useState<Thread | null>(null)
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const {
     isLoading: storeLoading,
@@ -155,6 +159,18 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
   } = useChatStore();
 
   const threads = useChatStore((state) => state.threads);
+
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
+  const filteredThreads = useMemo(() => {
+    if (!debouncedSearchQuery.trim()) {
+      return threads;
+    }
+    
+    return threads.filter((thread) =>
+      thread.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+    );
+  }, [threads, debouncedSearchQuery]);
 
   const handleNewChat = () => {
     navigate("/chat/new");
@@ -201,6 +217,10 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
     }
   };
 
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
+
   // Load threads on component mount
   useEffect(() => {
     const loadThreads = async () => {
@@ -238,7 +258,7 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
   return (
     <>
       <div className="border-r border-border bg-card flex flex-col h-screen">
-        <div className="p-4 border-b border-border">
+        <div className="p-4 border-b border-border space-y-3">
           <Button
             onClick={handleNewChat}
             className="w-full justify-start gap-2"
@@ -251,6 +271,28 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
             <MessageSquarePlus className="h-4 w-4" />
             New Chat
           </Button>
+          
+          {/* Search Input */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search conversations..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-10"
+            />
+            {searchQuery && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                onClick={handleClearSearch}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Show general errors */}
@@ -271,7 +313,7 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
 
         <div className="flex-1 overflow-y-auto">
           <div className="space-y-1 p-2">
-            {threads.map((thread: Thread) => (
+            {filteredThreads.map((thread: Thread) => (
               <div
                 key={thread.id}
                 className={`group relative p-3 rounded-lg cursor-pointer hover:bg-accent transition-colors ${
@@ -319,15 +361,29 @@ const ThreadSidebar: React.FC<ThreadSidebarProps> = ({
             ))}
           </div>
 
-          {!isLoading && threads.length === 0 && !error && (
+          {/* Empty states */}
+          {!isLoading && filteredThreads.length === 0 && !error && (
             <div className="flex flex-col items-center justify-center p-8 text-center">
               <MessageSquare className="h-12 w-12 text-muted-foreground mb-4" />
-              <p className="text-sm text-muted-foreground">
-                No conversations yet
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Start a new chat to begin
-              </p>
+              {debouncedSearchQuery.trim() ? (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    No conversations found for "{debouncedSearchQuery}"
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Try adjusting your search terms
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    No conversations yet
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Start a new chat to begin
+                  </p>
+                </>
+              )}
             </div>
           )}
         </div>

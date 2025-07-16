@@ -1,8 +1,8 @@
 import { RouteObject } from 'react-router-dom'
 import { lazy } from 'react'
+import Login from '@/pages/auth/Login'
 
-// Lazy load components
-const Login = lazy(() => import('@/pages/auth/Login'))
+
 const Chat = lazy(() => import('@/pages/feature/Chat'))
 
 const routes: RouteObject[] = [

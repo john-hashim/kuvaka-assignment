@@ -29,29 +29,22 @@ function AppRoutes() {
   }
 
   return (
-    <Routes>
+<Routes>
       <Route
         path="/"
         element={
           isAuthenticated ? (
-              <Navigate to="/chat/new" replace />
+            <Navigate to="/chat/new" replace />
           ) : (
             <Navigate to="/login" replace />
           )
         }
       />
-      <Route path="/" element={<Navigate to="/login" replace />} />    
       <Route path="/login" element={getRouteElement('/login')} />
+      <Route path="/chat" element={<Navigate to="/chat/new" replace />} />
+      <Route path="/chat/new" element={getRouteElement('/chat')} />
+      <Route path="/chat/:threadId" element={getRouteElement('/chat')} />
       <Route path="*" element={<Navigate to="/" replace />} />
-      <Route path="/chat" element={<Navigate to={'/chat/new'} replace />} />
-      <Route
-        path="/chat/new"
-        element={getRouteElement('/chat')}
-      />
-      <Route
-        path="/chat/:threadId"
-        element={getRouteElement('/chat')}
-      />
     </Routes>
   )
 }
