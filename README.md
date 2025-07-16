@@ -55,7 +55,7 @@ src/
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
+- Node.js 
 - npm or yarn
 
 ### Installation
@@ -63,7 +63,6 @@ src/
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd gemini-ai-mock-frontend
 ```
 
 2. Install dependencies:
@@ -76,7 +75,7 @@ npm install
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000` (or the port shown in your terminal).
+The application will be available at `http://localhost:5173`.
 
 ## 🔧 How It Works
 
@@ -133,31 +132,4 @@ The app integrates with:
 - **useApi**: Handles API requests with loading and error states
 - **useDebounce**: Optimizes search functionality with debouncing
 
-## 📝 Available Scripts
 
-```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run preview      # Preview production build
-npm run lint         # Run ESLint
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [shadcn/ui](https://ui.shadcn.com/) for the beautiful UI components
-- [REST Countries API](https://restcountries.com/) for country data
-- [Zustand](https://github.com/pmndrs/zustand) for state management
-- [Tailwind CSS](https://tailwindcss.com/) for styling utilities
-```
