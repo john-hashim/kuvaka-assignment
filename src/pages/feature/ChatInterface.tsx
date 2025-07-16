@@ -46,7 +46,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
         setCopiedMessageId(null);
       }, 2000);
     } catch (err) {
-      console.error('Failed to copy message:', err);
+      console.error("Failed to copy message:", err);
     }
   };
 
@@ -102,6 +102,15 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
       }
     } catch (e) {
       console.log(e);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (messageText.trim()) {
+        handleSendMessage();
+      }
     }
   };
 
@@ -184,7 +193,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
                         })}
                       </div>
                       <button
-                        onClick={() => handleCopyMessage(message.content, message.id)}
+                        onClick={() =>
+                          handleCopyMessage(message.content, message.id)
+                        }
                         className={`opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 ${
                           message.role === "user"
                             ? "text-blue-100 dark:text-blue-200 hover:text-white"
@@ -213,33 +224,30 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ threadId = null }) => {
                 )}
               </div>
             ))}
-            {/* Invisible element to scroll to */}
             <div ref={messagesEndRef} />
           </>
         )}
       </div>
 
-      {/* Message Input */}
       <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
-        <div className="flex items-end space-x-3">
-          <div className="flex-1">
-            <textarea
-              value={messageText}
-              onChange={(e) => setMessageText(e.target.value)}
-              placeholder="Type your message..."
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent max-h-32 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
-              rows={1}
-              style={{
-                minHeight: "48px",
-                height: "auto",
-              }}
-              onInput={(e) => {
-                const target = e.target as HTMLTextAreaElement;
-                target.style.height = "auto";
-                target.style.height = `${Math.min(target.scrollHeight, 128)}px`;
-              }}
-            />
-          </div>
+        <div className="flex items-center justify-start space-x-3">
+          <textarea
+            value={messageText}
+            onChange={(e) => setMessageText(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Type your message..."
+            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent max-h-32 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+            rows={1}
+            style={{
+              minHeight: "48px",
+              height: "auto",
+            }}
+            onInput={(e) => {
+              const target = e.target as HTMLTextAreaElement;
+              target.style.height = "auto";
+              target.style.height = `${Math.min(target.scrollHeight, 128)}px`;
+            }}
+          />
           <button
             onClick={handleSendMessage}
             disabled={!messageText.trim()}
